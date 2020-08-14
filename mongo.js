@@ -9,6 +9,7 @@ const Artist = require('./artist.schema')
 
 const d_day = require('./D_day') 
 const artists = require('./artist2')
+const fanproject = require('./fanproject')
 
 dotenv.config()
 
@@ -17,6 +18,7 @@ const app = express()
 app.use(cors())
 app.use(bodyps.json())
 app.use('/artists', artists)
+app.use('/fanproject', fanproject)
 
 app.get('/',(req,res)=>{
     console.log('get /')
@@ -49,13 +51,10 @@ app.get('/dday/coming', (req,res)=>{
         body = JSON.parse(body)
         //console.log(typeof body)
         var d_dayArr = body.map((val)=>{
-            //console.log(val.birthdate)
             var bd = new Date(val.birthdate)
-            //console.log('bd ',bd)
-            //console.log(typeof bd)
+            
             var bd_month = bd.getMonth()
             var bd_day = bd.getDate()
-            //console.log('bd month date',bd_month,bd_day)
             var date_string = `${bd_day} ${bd_month+1}`
             return {...val,"dday":d_day(date_string)}
         })

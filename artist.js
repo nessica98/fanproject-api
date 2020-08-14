@@ -6,6 +6,15 @@ var con = mysql.createConnection({
     database:"test"
   });
 
+  Router.get('/new', (req,res)=> {
+    console.log('get all artist')
+    con.query("SELECT * FROM artist", function (err, result, fields) {
+        if (err) throw err;
+        console.log(result);
+        res.send(result)
+      });
+})
+
 Router.get('/', (req,res)=> {
     console.log('get all artist')
     con.query("SELECT * FROM member_pic", function (err, result, fields) {
@@ -34,6 +43,10 @@ Router.post('/add', (req,res)=>{
         res.sendStatus(404).send('error' )
     }
     
+})
+
+Router.post('/add-artist', (req,res)=>{
+  let 
 })
 
 module.exports = Router
