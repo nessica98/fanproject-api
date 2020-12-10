@@ -16,7 +16,7 @@ console.log(y_kr.format("dddd, MMMM Do YYYY, h:mm:ss a"))
 
 var duration = moment.duration(y.diff(x))
 console.log(Math.floor(duration.asDays()))
-
+/*
 const d_day = function(date_str) {
     if(typeof date_str !== 'string') return;
 
@@ -29,7 +29,9 @@ const d_day = function(date_str) {
     console.log(Math.floor(duration.asDays()))
     return (Math.floor(duration.asDays()))
 }
-d_day('13 7 2020')
-d_day('15 7 2019')
-d_day('6 11 2020')
+*/
+const d_day = require('./D_day')
+console.log(d_day('13 7 2020'),d_day('15 7 2019'),d_day('6 11 2020'),d_day('4 1 2021'))
+
 //d_day('6 11')
+

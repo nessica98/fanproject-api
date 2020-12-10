@@ -2,28 +2,72 @@ const router = require('express').Router()
 //const mongoose = require('mongoose')
 
 const Artist = require('./artist.schema')
+const Band = require('./band2.schema')
 const moment = require('moment')
+//const  = require('./artist.schema')
 router.get('/', (req,res)=>{
     console.log('get /artists')
 
+})
+
+router.post('/v2/add', (req,res)=>{
+    var {artist_name,profile_url,birthdate,artist_band} = req.body
+    if(!(artist_name&&profile_url&&birthdate&&artist_band)){
+        res.sendStatus(400)
+    }
+    console.log(artist_band)
+    var artist_band_l;
+  
+    Band.find({bandName:artist_band}, (err,data)=>{
+        if(err) {
+            console.error(err)
+            res.sendStatus(500)
+        }
+        console.log(data)
+        artist_band_l = data
+        console.log(artist_band_l)
+        if(artist_band_l.length<1){
+            res.status(404).send('Band not exists')
+            return
+        }
+        var new_bandid = artist_band_l[0]._id
+        const birthdate_obj = new Date(birthdate)
+        console.log({name:artist_name,profile_url:profile_url,birthdate:birthdate_obj,bandId:new_bandid})
+        const new_artist =new Artist({name:artist_name,profile_url:profile_url,birthdate:birthdate_obj,bandId:new_bandid})
+        new_artist.save(fn=(err,Doc)=>{
+            if(err) {
+                console.error(err)
+                res.sendStatus(500)
+            }
+            Band.findByIdAndUpdate(Doc.bandId,{$push:{members:Doc._id}},(err,Doc_res)=>{
+                console.log(Doc_res)
+                res.send(Doc_res)
+            })
+            //res.send(Doc)
+    })
+   
+    
+})
 })
 
 router.post('/add', (req,res)=>{
     //console.log('post /artists/add')
     if(req.body){
         console.log('post /artists/add')
-        var artist_name = req.body.artist_name
-        var profile_url = req.body.profile_url
-        var birthdate = req.body.birthdate
+        var {artist_name,profile_url,birthdate} = req.body
         //console.log(artist_name,profile_url,birthdate)
         if(artist_name && profile_url && birthdate){
             var birthdate_obj = new Date(birthdate)
-            
-            data = {name:artist_name,profile_url:profile_url,birthdate:birthdate_obj}
+            var data = {name:artist_name,profile_url:profile_url,birthdate:birthdate_obj}
+            var new_artist = new Artist(data)
+            /*
             Artist.collection.insert(data, (err,result)=>{
                 if(err) console.error(err)
                 console.log(result)
                 res.send(result)
+            })*/
+            new_artist.save().then((val)=>{
+                res.send(val)
             })
         }
         else res.sendStatus(400)
@@ -50,4 +94,5 @@ router.put('/update-profile-pic', (req,res)=>{
         res.sendStatus(400)
     }
 })
+
 module.exports = router

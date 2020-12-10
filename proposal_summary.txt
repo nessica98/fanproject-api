@@ -1,0 +1,21 @@
+J. DSanta, R. 
+- LoRa + Vehicular Monitor
+- LoRa + IPv6 packet
+- 6 Interface
+- Data server : UDP datamessage
+
+Sudeera 
+- GPS fisheries boat : to reduce IUU
+- "VMS is costly" => VTS instead
+- 6 hour send data ...
+- HMAC MD-5 Algorithm : Data correction
+
+T. Adiono et al
+- Indonesian Fisheries for under 5 ton gross
+- LoRa 
+- System Arch
+    - End-node
+    - Android app (UI)
+    - Gateway
+    - Server-application 
+
