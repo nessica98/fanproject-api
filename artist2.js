@@ -4,11 +4,13 @@ const router = require('express').Router()
 const Artist = require('./artist.schema')
 const Band = require('./band2.schema')
 const moment = require('moment')
+
 //const  = require('./artist.schema')
 router.get('/', (req,res)=>{
     console.log('get /artists')
 
 })
+
 
 router.post('/v2/add', (req,res)=>{
     var {artist_name,profile_url,birthdate,artist_band} = req.body
@@ -17,7 +19,19 @@ router.post('/v2/add', (req,res)=>{
     }
     console.log(artist_band)
     var artist_band_l;
-  
+    if(artist_band==='SOLO'){
+        const birthdate_obj = new Date(birthdate)
+        const new_artist =new Artist({name:artist_name,profile_url:profile_url,birthdate:birthdate_obj})
+        new_artist.save(fn=(err,Doc)=>{
+            if(err) {
+                console.error(err)
+                res.sendStatus(500)
+            }
+            res.send(Doc)
+            return
+        })
+        
+    }else{
     Band.find({bandName:artist_band}, (err,data)=>{
         if(err) {
             console.error(err)
@@ -39,6 +53,7 @@ router.post('/v2/add', (req,res)=>{
                 console.error(err)
                 res.sendStatus(500)
             }
+            console.log('vefore push',Doc)
             Band.findByIdAndUpdate(Doc.bandId,{$push:{members:Doc._id}},(err,Doc_res)=>{
                 console.log(Doc_res)
                 res.send(Doc_res)
@@ -48,7 +63,7 @@ router.post('/v2/add', (req,res)=>{
    
     
 })
-})
+}})
 
 router.post('/add', (req,res)=>{
     //console.log('post /artists/add')

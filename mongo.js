@@ -17,15 +17,23 @@ dotenv.config()
 
 const app = express()
 const year = moment().year()
+var hostname
+const get_hostname = (req,res,next)=>{
+ hostname = req.hostname
+    console.log(hostname)
+    next()
+}
 console.log(year)
 
 app.use(cors())
+app.use(get_hostname)
 app.use(bodyps.json())
 app.use('/artists', artists)
 app.use('/fanproject', fanproject)
 app.use('/band',band)
 
 app.get('/',(req,res)=>{
+    console.log(hostname)
     console.log('get /')
     res.send('hello world');
 })
@@ -49,7 +57,7 @@ app.get('/artist',(req,res)=>{
 
 app.get('/dday/coming', (req,res)=>{
     console.log('get /dday/coming')
-    request('http://127.0.0.1:5000/artist', (err,resp,body)=>{
+    request(`http://${hostname}:5000/artist`, (err,resp,body)=>{
         console.error('error:', err); // Print the error if one occurred
         console.log('statusCode:', resp && resp.statusCode); // Print the response status code if a response was received
         console.log('body:', body); // Print the HTML for the Google homepage.
@@ -80,7 +88,7 @@ app.get('/dday/coming', (req,res)=>{
 // Not use !!
 app.get('/dday/past', (req,res)=>{
     console.log('get /dday/past')
-    request('http://127.0.0.1:5000/artist', (err,resp,body)=>{
+    request(`http://${hostname}:5000/artist`, (err,resp,body)=>{
         console.error('error:', err); // Print the error if one occurred
         console.log('statusCode:', resp && resp.statusCode); // Print the response status code if a response was received
         console.log('body:', body); // Print the HTML for the Google homepage.
