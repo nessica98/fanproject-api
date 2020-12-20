@@ -57,7 +57,7 @@ app.get('/artist',(req,res)=>{
 
 app.get('/dday/coming', (req,res)=>{
     console.log('get /dday/coming')
-    request(`http://${hostname}:5000/artist`, (err,resp,body)=>{
+    request(`http://${hostname}:${process.env.PORT}/artist`, (err,resp,body)=>{
         console.error('error:', err); // Print the error if one occurred
         console.log('statusCode:', resp && resp.statusCode); // Print the response status code if a response was received
         console.log('body:', body); // Print the HTML for the Google homepage.
@@ -88,7 +88,7 @@ app.get('/dday/coming', (req,res)=>{
 // Not use !!
 app.get('/dday/past', (req,res)=>{
     console.log('get /dday/past')
-    request(`http://${hostname}:5000/artist`, (err,resp,body)=>{
+    request(`http://${hostname}:${process.env.PORT}/artist`, (err,resp,body)=>{
         console.error('error:', err); // Print the error if one occurred
         console.log('statusCode:', resp && resp.statusCode); // Print the response status code if a response was received
         console.log('body:', body); // Print the HTML for the Google homepage.
