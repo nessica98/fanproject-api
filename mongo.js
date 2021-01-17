@@ -77,7 +77,11 @@ app.get('/dday/coming', (req,res)=>{
                  duration = d_day(date_string)
                 return {...val,"dday":duration,ref_year:year+1}
             }
-            else return {...val,"dday":duration,ref_year:year}
+            else if(duration<=-244){
+                date_string = `${bd_day} ${bd_month+1} ${year-1}`
+                duration = d_day(date_string)
+                return {...val,"dday":duration,ref_year:year-1}
+            }else return {...val,"dday":duration,ref_year:year}
         })
         //d_dayArr = d_dayArr.filter((val)=>{return val.dday<=0})
         d_dayArr = d_dayArr.sort((a,b)=> b.dday - a.dday) // decending sort
