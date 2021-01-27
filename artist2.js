@@ -6,9 +6,15 @@ const Band = require('./band2.schema')
 const moment = require('moment')
 
 //const  = require('./artist.schema')
-router.get('/', (req,res)=>{
-    console.log('get /artists')
-
+router.get('/:id', (req,res)=>{
+    const { id } = req.params
+    console.log('get /artists/'+id)
+    Artist.findById(id, (err,doc)=>{
+        if(err) {
+            res.sendStatus(500)
+        }
+        res.send(doc)
+    })
 })
 
 
