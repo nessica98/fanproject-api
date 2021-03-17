@@ -14,6 +14,13 @@ router.get('/', (req,res)=>{
 })
 
 router.post('/add',(req,res)=>{
+    const {bandName,debut_date,bandProfilePicURL} = req.body
 
+    const new_band = new Band({bandName:bandName,debut_date:new Date(debut_date),bandProfilePicURL:bandProfilePicURL,members:[]})
+    new_band.save((err,prod)=>{
+    if(err) console.error(err)
+    console.log(prod)
+    //mongoose.disconnect()
+})
 })
 module.exports = router

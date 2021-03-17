@@ -32,6 +32,7 @@ app.use('/artists', artists)
 app.use('/fanproject', fanproject)
 app.use('/band',band)
 
+
 app.get('/',(req,res)=>{
     console.log(hostname)
     console.log('get /')

@@ -10,21 +10,37 @@ Router.get('/', (req,res)=>{
         res.send(data)
     })
 })
-Router.get('/add', (req,res)=>{
-    console.log('from add')
-    const rs = new Set(Object.keys(req.body))
-    const rs_comp = ['fanproject_name','fanproject_date','fanproject_type','artist_id','orginizerName','fanproject_place']
-    console.log(rs)
-    rs_comp.forEach((val,ind)=>{
-        if(rs.has(val)===false){
-            res.sendStatus(400)
-        }
-    })
+Router.post('/add', (req,res)=>{
+    const {
+        fanproject_name,
+        fanproject_date,
+        fanproject_type, 
+        artistId,
+        organizerName,
+        organizerTwitter
+    } = req.body
+    try {
+    const {fanproject_startdate, fanproject_enddate} = fanproject_date
+    } catch {
+
+    }
+    // if(!(fanproject_name && fanproject_startdate && fanproject_enddate && fanproject_type && organizerName)) {
+    //     res.sendStatus(500)
+    //     return
+    // } 
+    // if(!(fanproject_startdate && fanproject_enddate)) {
+    //     res.sendStatus(500)
+    // }
     const Fanproject_res = new Fanproject(req.body)
-    Fanproject_res.save((err)=>{
-        if(err) console.log(err)
+    Fanproject_res.save((err,prod)=>{
+        if(err) { 
+            console.error(err.errors)
+            res.sendStatus(400)
+            return
+        }
+        res.send({status:true, new_data:prod})
     })
-    res.send('success')
+    //res.send('success')
 })
 Router.get('/:id', (req,res)=>{
     console.log('get by id')
