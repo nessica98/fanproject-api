@@ -1,5 +1,6 @@
 const router = require('express').Router()
 //const mongoose = require('mongoose')
+//const upload = require('./multer.config')
 
 const Artist = require('./artist.schema')
 const Band = require('./band2.schema')
@@ -7,13 +8,19 @@ const moment = require('moment')
 
 //const  = require('./artist.schema')
 router.get('/:id', (req,res)=>{
-    const { id } = req.params
-    console.log('get /artists/'+id)
-    Artist.findById(id, (err,doc)=>{
-        if(err) {
-            res.sendStatus(500)
-        }
-        res.send(doc)
+    console.log('get /artists')
+    const {id} = req.params
+    console.log(id)
+    Artist.findById(id,(err,Doc)=>{
+        if(err){
+            res.sendStatus(400)
+        }else{ 
+        const bandId = Doc.bandId
+        console.log(bandId)
+        Band.findById(bandId,(err,Doc_b)=>{
+            const bandName = Doc_b.bandName
+            res.send({...Doc._doc,bandName:bandName})
+        })}
     })
 })
 
@@ -115,5 +122,26 @@ router.put('/update-profile-pic', (req,res)=>{
         res.sendStatus(400)
     }
 })
-
+/*
+router.post('/upload',upload.single('profile'), (req,res,next)=>{
+    const {artist_id} = req.body
+    console.log(req.body)
+    if(!artist_id) {
+        res.sendStatus(400)
+        return;
+    }
+    try{
+        console.log(req.file)
+        if(req.file.mimetype !=="image/jpeg" || req.file.mimetype !=="image/png"){
+            res.sendStatus(304) // Not update
+            return
+        }
+        Artist.findByIdAndUpdate(artist_id,{im})
+        res.sendStatus(201)
+    }catch(err){
+        console.error(err)
+        res.sendStatus(500)
+    }
+})
+*/
 module.exports = router

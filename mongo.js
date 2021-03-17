@@ -32,7 +32,6 @@ app.use('/artists', artists)
 app.use('/fanproject', fanproject)
 app.use('/band',band)
 
-
 app.get('/',(req,res)=>{
     console.log(hostname)
     console.log('get /')
@@ -66,7 +65,7 @@ app.get('/dday/coming', (req,res)=>{
         //console.log(typeof body)
         var d_dayArr = body.map((val)=>{
             var bd = new Date(val.birthdate)
-            
+            val.profile_url = urlChange(val.profile_url)
             var bd_month = bd.getMonth()
             var bd_day = bd.getDate()
             var date_string = `${bd_day} ${bd_month+1} ${year}`
