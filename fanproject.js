@@ -1,54 +1,100 @@
 const Router = require('express').Router()
+const mongoose = require('mongoose');
 
 const Fanproject = require('./fanproject.schema')
 
 // Return all data for show in index place
-Router.get('/', (req,res)=>{
+Router.get('/', (req, res) => {
     console.log('get all event')
-    Fanproject.find({},'fanproject_name', (err,data)=>{
-        if(err) {console.log(err)}
+    Fanproject.find({}, 'fanproject_name', (err, data) => {
+        if (err) { console.log(err) }
         res.send(data)
     })
 })
-Router.post('/add', (req,res)=>{
+
+Router.get('/full', (req, res) => {
+    console.log('get all event')
+    Fanproject.find({}, (err, data) => {
+        if (err) { console.log(err) }
+        res.send(data)
+    })
+})
+Router.post('/add', async (req, res) => {
     const {
         fanproject_name,
         fanproject_date,
-        fanproject_type, 
+        fanproject_type,
         artistId,
         organizerName,
-        organizerTwitter
+        organizerTwitter,
+        fanprojectTwitter,
+        fanprojectPlaceId
     } = req.body
+    const session = await Fanproject.startSession()
+    console.log(artistId)
     try {
-    const {fanproject_startdate, fanproject_enddate} = fanproject_date
-    } catch {
-
-    }
-    // if(!(fanproject_name && fanproject_startdate && fanproject_enddate && fanproject_type && organizerName)) {
-    //     res.sendStatus(500)
-    //     return
-    // } 
-    // if(!(fanproject_startdate && fanproject_enddate)) {
-    //     res.sendStatus(500)
-    // }
-    const Fanproject_res = new Fanproject(req.body)
-    Fanproject_res.save((err,prod)=>{
-        if(err) { 
-            console.error(err.errors)
+        const { fanproject_startdate, fanproject_enddate } = fanproject_date
+        if(new Date(fanproject_startdate) > new Date(fanproject_enddate)){
             res.sendStatus(400)
             return
         }
-        res.send({status:true, new_data:prod})
-    })
+        
+        if(!artistId || !artistId.IdList || !Array.isArray(artistId.IdList)){
+            res.sendStatus(400)
+            return
+        }
+        const { twitterAcc, twitterHashTag } = fanprojectTwitter
+        fanprojectTwitter.twitterHashTag = fanprojectTwitter.twitterHashTag.toLowerCase()
+    } catch {
+        res.sendStatus(400);
+        return
+    }
+    if (!(fanproject_name && fanproject_type && organizerName)) {
+        res.sendStatus(400)
+        return
+    }
+    
+    // if(!(fanproject_startdate && fanproject_enddate)) {
+    //     res.sendStatus(500)
+    // }
+    
+    try {
+        await session.withTransaction(async()=>{
+
+            const Fanproject_res = new Fanproject({
+                fanproject_name: fanproject_name,
+                fanproject_date: fanproject_date,
+                fanproject_type: fanproject_type,
+                organizer: {
+                    organizerName: organizerName,
+                    organizerTwitter: organizerTwitter ? organizerTwitter : null
+                },
+                fanprojectContact: fanprojectTwitter,
+                fanproject_date: fanproject_date,
+                artistId: artistId,
+                fanproject_placeId: fanprojectPlaceId
+            })
+
+            const result = await Fanproject_res.save()
+            res.send({ addStatus: true, result: result })
+        })
+        
+    }
+    catch (e) {
+        res.status(500).send(e)
+    }finally {
+        session.endSession();
+    }
+    // result.session(session)
     //res.send('success')
 })
-Router.get('/:id', (req,res)=>{
+Router.get('/:id', (req, res) => {
     console.log('get by id')
     const id = req.params.id
     console.log(id)
-    
-    Fanproject.findById(id, (err,data)=>{
-        if(err) {res.sendStatus(400)}
+
+    Fanproject.findById(id, (err, data) => {
+        if (err) { res.sendStatus(400) }
         res.send(data)
     })
 })

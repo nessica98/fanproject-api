@@ -13,7 +13,9 @@ var fanproject_sche = new schema({
         }, 
         IdList: [schema.Types.ObjectId]
     }, 
-    organizer: { organizerName: String, organizerTwitter: String }
+    organizer: { organizerName: String, organizerTwitter: String },
+    fanprojectContact: {twitterAcc:String, twitterHashTag:String},
+    fanproject_placeId : {type:schema.Types.ObjectId, required:true}
 });
 
 let Fanproject = mongoose.model('fanproject', fanproject_sche)

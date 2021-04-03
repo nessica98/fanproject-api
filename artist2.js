@@ -6,6 +6,7 @@ const Artist = require('./artist.schema')
 const Band = require('./band2.schema')
 const moment = require('moment')
 
+const urlChange = require('./url.func')
 //const  = require('./artist.schema')
 router.get('/:id', (req,res)=>{
     console.log('get /artists')

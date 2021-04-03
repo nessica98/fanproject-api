@@ -12,6 +12,7 @@ const d_day = require('./D_day')
 const artists = require('./artist2')
 const fanproject = require('./fanproject')
 const band = require('./band')
+const urlChange = require('./url.func')
 
 dotenv.config()
 
