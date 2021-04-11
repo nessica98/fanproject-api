@@ -12,6 +12,7 @@ const d_day = require('./D_day')
 const artists = require('./artist2')
 const fanproject = require('./fanproject')
 const band = require('./band')
+const upload = require('./upload')
 const urlChange = require('./url.func')
 
 dotenv.config()
@@ -32,6 +33,8 @@ app.use(bodyps.json())
 app.use('/artists', artists)
 app.use('/fanproject', fanproject)
 app.use('/band',band)
+app.use('/upload', upload)
+
 
 app.get('/',(req,res)=>{
     console.log(hostname)

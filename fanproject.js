@@ -1,7 +1,9 @@
 const Router = require('express').Router()
 const mongoose = require('mongoose');
+const Artist = require('./artist.schema');
 
 const Fanproject = require('./fanproject.schema')
+const FanprojectPlace = require('./fanprojectplace.schema')
 
 // Return all data for show in index place
 Router.get('/', (req, res) => {
@@ -12,13 +14,35 @@ Router.get('/', (req, res) => {
     })
 })
 
-Router.get('/full', (req, res) => {
+Router.get('/full', async (req, res) => {
     console.log('get all event')
-    Fanproject.find({}, (err, data) => {
-        if (err) { console.log(err) }
-        res.send(data)
+    const raw_data = await Fanproject.find().lean()
+    const fanproject_place = await FanprojectPlace.find().select('fanprojectplace_name').lean()
+    const artist_data = await Artist.find().lean()
+    console.log(fanproject_place)
+    fp_map = {}
+    arr_map = {}
+    fanproject_place.forEach((val,idx)=>{
+        fp_map[val._id] = val.fanprojectplace_name
     })
+    artist_data.forEach((val,idx)=>{
+        arr_map[val._id] = val.profile_url
+    })
+    console.log(fp_map)
+    console.log(arr_map)
+    raw_data.forEach((val,idx)=>{
+        //console.log(val['fanproject_placeId'])
+        raw_data[idx]['fanprojectplace_name'] = fp_map[val['fanproject_placeId']]
+        const arr_pic = val.artistId.IdList.map((val1)=>{
+            return arr_map[val1]
+        })
+        raw_data[idx]['artist_pics'] = arr_pic
+        
+    })
+    res.send(raw_data)
 })
+
+
 Router.post('/add', async (req, res) => {
     const {
         fanproject_name,
