@@ -5,10 +5,12 @@ const router = require('express').Router()
 const Artist = require('./artist.schema')
 const Band = require('./band2.schema')
 const moment = require('moment')
+require('dotenv').config()
 const aws = require('aws-sdk')
+
 aws.config.update({
-    accessKeyId: 'AKIA3FSNENI7OIZHQC4E',
-    secretAccessKey: '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',
+    accessKeyId: process.env.AWS_ACCESSKEY,
+    secretAccessKey: process.env.AWS_SECRETKEY,
     region: 'us-east-1'
 })
 const urlChange = require('./url.func')
